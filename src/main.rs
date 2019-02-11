@@ -70,9 +70,12 @@ fn run() -> Result<(), failure::Error> {
 
     let vertices: Vec<Vertex> = vec![
         // positions      // colors
-        Vertex { pos: (-0.5, -0.5, 0.0).into(), clr: (1.0, 0.0, 0.0).into() },
+        Vertex { pos: (0.5, 0.5, 0.0).into(), clr: (1.0, 0.0, 0.0).into() },
+        Vertex { pos: (0.5, -0.5, 0.0).into(), clr: (1.0, 0.0, 0.0).into() },
+        Vertex { pos: (-0.5, 0.5, 0.0).into(), clr: (1.0, 0.0, 0.0).into() },
         Vertex { pos: (0.5, -0.5, 0.0).into(), clr: (0.0, 1.0, 0.0).into() },
-        Vertex { pos: (0.0, 0.5, 0.0).into(), clr: (0.0, 0.0, 1.0).into() },
+        Vertex { pos: (-0.5, -0.5, 0.0).into(), clr: (0.0, 1.0, 0.0).into() },
+        Vertex { pos: (-0.5, 0.5, 0.0).into(), clr: (0.0, 1.0, 0.0).into() },
     ];
 
     let mut vertex_buffer: gl::types::GLuint = 0;
@@ -136,7 +139,7 @@ fn run() -> Result<(), failure::Error> {
             gl.DrawArrays(
                 gl::TRIANGLES,
                 0,
-                3
+                6
             );
         }
 
