@@ -3,6 +3,7 @@ extern crate failure;
 
 extern crate sdl2;
 extern crate gl;
+extern crate nalgebra_glm as glm;
 
 pub mod render_gl;
 pub mod resources;
@@ -38,6 +39,9 @@ impl Vertex {
     }
 }
 
+const SCR_WIDTH: u32 = 800;
+const SCR_HEIGHT: u32 = 600;
+
 fn main() {
     if let Err(e) = run() {
         println!("{}", failure_to_string(e));
@@ -54,7 +58,7 @@ fn run() -> Result<(), failure::Error> {
     gl_attr.set_context_version(4, 5);
 
     let window = video_subsystem
-        .window("Game", 900, 700)
+        .window("Game", SCR_WIDTH, SCR_HEIGHT)
         .opengl()
         .resizable()
         .build()
@@ -69,13 +73,57 @@ fn run() -> Result<(), failure::Error> {
     ).unwrap();
 
     let vertices: Vec<Vertex> = vec![
-        // positions      // colors
+        // plane
         Vertex { pos: (0.5, 0.5, 0.0).into(), clr: (1.0, 0.0, 0.0).into() },
         Vertex { pos: (0.5, -0.5, 0.0).into(), clr: (1.0, 0.0, 0.0).into() },
         Vertex { pos: (-0.5, 0.5, 0.0).into(), clr: (1.0, 0.0, 0.0).into() },
-        Vertex { pos: (0.5, -0.5, 0.0).into(), clr: (0.0, 1.0, 0.0).into() },
-        Vertex { pos: (-0.5, -0.5, 0.0).into(), clr: (0.0, 1.0, 0.0).into() },
-        Vertex { pos: (-0.5, 0.5, 0.0).into(), clr: (0.0, 1.0, 0.0).into() },
+
+        Vertex { pos: (0.5, -0.5, 0.0).into(), clr: (1.0, 0.0, 0.0).into() },
+        Vertex { pos: (-0.5, -0.5, 0.0).into(), clr: (1.0, 0.0, 0.0).into() },
+        Vertex { pos: (-0.5, 0.5, 0.0).into(), clr: (1.0, 0.0, 0.0).into() },
+
+        // cube
+        // Vertex { pos: (-0.3, -0.3, -0.3).into(), clr: (1.0, 0.0, 0.0).into() },
+        // Vertex { pos: ( 0.3, -0.3, -0.3).into(), clr: (1.0, 0.0, 0.0).into() },
+        // Vertex { pos: ( 0.3,  0.3, -0.3).into(), clr: (1.0, 0.0, 0.0).into() },
+        // Vertex { pos: ( 0.3,  0.3, -0.3).into(), clr: (1.0, 0.0, 0.0).into() },
+        // Vertex { pos: (-0.3,  0.3, -0.3).into(), clr: (1.0, 0.0, 0.0).into() },
+        // Vertex { pos: (-0.3, -0.3, -0.3).into(), clr: (1.0, 0.0, 0.0).into() },
+
+        // Vertex { pos: (-0.3, -0.3,  0.3).into(), clr: (0.0, 1.0, 0.0).into() },
+        // Vertex { pos: ( 0.3, -0.3,  0.3).into(), clr: (0.0, 1.0, 0.0).into() },
+        // Vertex { pos: ( 0.3,  0.3,  0.3).into(), clr: (0.0, 1.0, 0.0).into() },
+        // Vertex { pos: ( 0.3,  0.3,  0.3).into(), clr: (0.0, 1.0, 0.0).into() },
+        // Vertex { pos: (-0.3,  0.3,  0.3).into(), clr: (0.0, 1.0, 0.0).into() },
+        // Vertex { pos: (-0.3, -0.3,  0.3).into(), clr: (0.0, 1.0, 0.0).into() },
+
+        // Vertex { pos: (-0.3,  0.3,  0.3).into(), clr: (0.0, 0.0, 1.0).into() },
+        // Vertex { pos: (-0.3,  0.3, -0.3).into(), clr: (0.0, 0.0, 1.0).into() },
+        // Vertex { pos: (-0.3, -0.3, -0.3).into(), clr: (0.0, 0.0, 1.0).into() },
+        // Vertex { pos: (-0.3, -0.3, -0.3).into(), clr: (0.0, 0.0, 1.0).into() },
+        // Vertex { pos: (-0.3, -0.3,  0.3).into(), clr: (0.0, 0.0, 1.0).into() },
+        // Vertex { pos: (-0.3,  0.3,  0.3).into(), clr: (0.0, 0.0, 1.0).into() },
+
+        // Vertex { pos: ( 0.3,  0.3,  0.3).into(), clr: (1.0, 1.0, 0.0).into() },
+        // Vertex { pos: ( 0.3,  0.3, -0.3).into(), clr: (1.0, 1.0, 0.0).into() },
+        // Vertex { pos: ( 0.3, -0.3, -0.3).into(), clr: (1.0, 1.0, 0.0).into() },
+        // Vertex { pos: ( 0.3, -0.3, -0.3).into(), clr: (1.0, 1.0, 0.0).into() },
+        // Vertex { pos: ( 0.3, -0.3,  0.3).into(), clr: (1.0, 1.0, 0.0).into() },
+        // Vertex { pos: ( 0.3,  0.3,  0.3).into(), clr: (1.0, 1.0, 0.0).into() },
+
+        // Vertex { pos: (-0.3, -0.3, -0.3).into(), clr: (1.0, 0.0, 1.0).into() },
+        // Vertex { pos: ( 0.3, -0.3, -0.3).into(), clr: (1.0, 0.0, 1.0).into() },
+        // Vertex { pos: ( 0.3, -0.3,  0.3).into(), clr: (1.0, 0.0, 1.0).into() },
+        // Vertex { pos: ( 0.3, -0.3,  0.3).into(), clr: (1.0, 0.0, 1.0).into() },
+        // Vertex { pos: (-0.3, -0.3,  0.3).into(), clr: (1.0, 0.0, 1.0).into() },
+        // Vertex { pos: (-0.3, -0.3, -0.3).into(), clr: (1.0, 0.0, 1.0).into() },
+
+        // Vertex { pos: (-0.3,  0.3, -0.3).into(), clr: (1.0, 1.0, 1.0).into() },
+        // Vertex { pos: ( 0.3,  0.3, -0.3).into(), clr: (1.0, 1.0, 1.0).into() },
+        // Vertex { pos: ( 0.3,  0.3,  0.3).into(), clr: (1.0, 1.0, 1.0).into() },
+        // Vertex { pos: ( 0.3,  0.3,  0.3).into(), clr: (1.0, 1.0, 1.0).into() },
+        // Vertex { pos: (-0.3,  0.3,  0.3).into(), clr: (1.0, 1.0, 1.0).into() },
+        // Vertex { pos: (-0.3,  0.3, -0.3).into(), clr: (1.0, 1.0, 1.0).into() },
     ];
 
     let mut vertex_buffer: gl::types::GLuint = 0;
@@ -115,9 +163,11 @@ fn run() -> Result<(), failure::Error> {
     }
 
     unsafe {
-        gl.Viewport(0, 0, 900, 700); // set viewport
+        gl.Viewport(0, 0, SCR_WIDTH as i32, SCR_HEIGHT as i32); // set viewport
         gl.ClearColor(0.3, 0.3, 0.5, 1.0);
     }
+
+    let m4default = glm::mat4(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0);
 
     let mut event_pump = sdl.event_pump().unwrap();
     'main: loop {
@@ -131,6 +181,25 @@ fn run() -> Result<(), failure::Error> {
         unsafe {
             gl.Clear(gl::COLOR_BUFFER_BIT);
         }
+
+        let mut model = m4default;
+        let mut view = m4default;
+        let mut projection = m4default;
+
+        model = glm::rotate(&model, glm::radians(&glm::vec1(-55.0)).x, &glm::vec3(1.0, 0.0, 0.0));
+        view = glm::translate(&view, &glm::vec3(0.0, 0.0, -3.0));
+        projection = glm::perspective(SCR_WIDTH as f32 / SCR_HEIGHT as f32, glm::radians(&glm::vec1(45.0)).x, 0.1, 100.0);
+
+        shader_program.set_mat4(&gl, "model", &model);
+        shader_program.set_mat4(&gl, "view", &view);
+        shader_program.set_mat4(&gl, "projection", &projection);
+
+        // mat4 * vec4
+        // {{a, b, c, d}, {e, f, g, h}, {i, j, k, l}, {m, n, o, p}} * {w, x, y, z} = {aw + bx + cy + dz, ew + fx + gy + hz, iw + jx + ky + lz, mw + nx + oy + pz} 
+
+        println!("model {:?}", model);
+        println!("view {:?}", view);
+        println!("projectoion {:?}", projection);
 
         shader_program.activate();
 

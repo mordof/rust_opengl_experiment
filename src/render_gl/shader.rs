@@ -2,6 +2,8 @@ use gl;
 use std;
 use std::ffi::{CString, CStr};
 use crate::resources::{self, Resources};
+use crate::render_gl::data;
+extern crate nalgebra_glm as glm;
 
 #[derive(Debug, Fail)]
 pub enum Error {
@@ -79,6 +81,17 @@ impl Program {
         }
 
         Ok(Program { gl: gl.clone(), id: program_id })
+    }
+
+    pub fn set_mat4(&self, gl: &gl::Gl, name: &str, mat4: &glm::Mat4) {
+        let mut loc: gl::types::GLint = 0;
+        let glchar_name: *const gl::types::GLchar = data::make_str(name);
+
+        unsafe {
+            loc = gl.GetUniformLocation(self.id(), glchar_name);
+
+            gl.UniformMatrix4fv(loc, 1, gl::FALSE, mat4.as_ptr());
+        }
     }
 
     pub fn id(&self) -> gl::types::GLuint {

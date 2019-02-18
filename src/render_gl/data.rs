@@ -1,4 +1,5 @@
 use gl;
+use std::ffi::{CString};
 
 #[allow(non_camel_case_types)]
 #[derive(Copy, Clone, Debug)]
@@ -33,4 +34,9 @@ impl From<(f32, f32, f32)> for f32_f32_f32 {
     fn from(other: (f32, f32, f32)) -> Self {
         f32_f32_f32::new(other.0, other.1, other.2)
     }
+}
+
+pub fn make_str(s: &str) -> *const i8 {
+    let c_str = CString::new(s).unwrap();
+    c_str.as_ptr() as *const i8
 }
