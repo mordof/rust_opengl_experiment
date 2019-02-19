@@ -89,9 +89,6 @@ impl Program {
 
         unsafe {
             loc = gl.GetUniformLocation(self.id(), c_str.as_ptr());
-
-            println!("loc({:?}) name({:?})", loc, name);
-
             gl.UniformMatrix4fv(loc, 1, gl::FALSE, mat4.as_ptr());
         }
     }
