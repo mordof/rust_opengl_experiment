@@ -35,8 +35,3 @@ impl From<(f32, f32, f32)> for f32_f32_f32 {
         f32_f32_f32::new(other.0, other.1, other.2)
     }
 }
-
-pub fn make_str(s: &str) -> *const gl::types::GLchar {
-    let c_str = CString::new(s).unwrap();
-    c_str.as_ptr() as *const gl::types::GLchar
-}

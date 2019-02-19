@@ -85,10 +85,10 @@ impl Program {
 
     pub fn set_mat4(&self, gl: &gl::Gl, name: &str, mat4: &glm::Mat4) {
         let mut loc: gl::types::GLint = 0;
-        let glchar_name = data::make_str(name);
+        let c_str = CString::new(name).unwrap();
 
         unsafe {
-            loc = gl.GetUniformLocation(self.id(), glchar_name);
+            loc = gl.GetUniformLocation(self.id(), c_str.as_ptr());
 
             println!("loc({:?}) name({:?})", loc, name);
 
