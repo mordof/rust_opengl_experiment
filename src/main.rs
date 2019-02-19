@@ -1,6 +1,9 @@
 #[macro_use]
 extern crate failure;
 
+#[macro_use]
+extern crate c_string;
+
 extern crate sdl2;
 extern crate gl;
 extern crate nalgebra_glm as glm;
@@ -190,6 +193,8 @@ fn run() -> Result<(), failure::Error> {
         view = glm::translate(&view, &glm::vec3(0.0, 0.0, -3.0));
         projection = glm::perspective(SCR_WIDTH as f32 / SCR_HEIGHT as f32, glm::radians(&glm::vec1(45.0)).x, 0.1, 100.0);
 
+        shader_program.activate();
+
         shader_program.set_mat4(&gl, "model", &model);
         shader_program.set_mat4(&gl, "view", &view);
         shader_program.set_mat4(&gl, "projection", &projection);
@@ -197,11 +202,9 @@ fn run() -> Result<(), failure::Error> {
         // mat4 * vec4
         // {{a, b, c, d}, {e, f, g, h}, {i, j, k, l}, {m, n, o, p}} * {w, x, y, z} = {aw + bx + cy + dz, ew + fx + gy + hz, iw + jx + ky + lz, mw + nx + oy + pz} 
 
-        println!("model {:?}", model);
-        println!("view {:?}", view);
-        println!("projectoion {:?}", projection);
-
-        shader_program.activate();
+        // println!("model {:?}", model);
+        // println!("view {:?}", view);
+        // println!("projectoion {:?}", projection);
 
         unsafe {
             gl.BindVertexArray(vertex_array);

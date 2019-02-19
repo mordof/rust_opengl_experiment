@@ -36,7 +36,7 @@ impl From<(f32, f32, f32)> for f32_f32_f32 {
     }
 }
 
-pub fn make_str(s: &str) -> *const i8 {
+pub fn make_str(s: &str) -> *const gl::types::GLchar {
     let c_str = CString::new(s).unwrap();
-    c_str.as_ptr() as *const i8
+    c_str.as_ptr() as *const gl::types::GLchar
 }

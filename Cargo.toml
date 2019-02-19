@@ -9,6 +9,7 @@ sdl2 = { version = "0.32.0", features = ["bundled", "static-link"] }
 gl = { path = "lib/gl" }
 failure = "0.1.5"
 nalgebra-glm = "0.3"
+c_string = "0.7.0"
 
 [features]
 gl_debug = ["gl/debug"]
