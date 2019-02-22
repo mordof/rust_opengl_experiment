@@ -16,18 +16,6 @@ impl f32_f32_f32 {
             d0, d1, d2
         }
     }
-
-    pub unsafe fn vertex_attrib_pointer(gl: &gl::Gl, stride: usize, location: usize, offset: usize) {
-        gl.EnableVertexAttribArray(location as gl::types::GLuint);
-        gl.VertexAttribPointer(
-            location as gl::types::GLuint,
-            3, // number of components per vertex attribute
-            gl::FLOAT, // data type
-            gl::FALSE, // normalized (int-to-float conversion)
-            stride as gl::types::GLint,
-            offset as *const gl::types::GLvoid
-        );
-    }
 }
 
 impl From<(f32, f32, f32)> for f32_f32_f32 {

@@ -2,7 +2,6 @@ use gl;
 use std;
 use std::ffi::{CString, CStr};
 use crate::resources::{self, Resources};
-use crate::render_gl::data;
 extern crate nalgebra_glm as glm;
 
 #[derive(Debug, Fail)]
