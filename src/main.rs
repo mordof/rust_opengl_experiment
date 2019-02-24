@@ -5,11 +5,14 @@ extern crate sdl2;
 extern crate gl;
 extern crate nalgebra_glm as glm;
 
-pub mod render_gl;
-pub mod resources;
+mod render_gl;
+mod resources;
+mod generators;
 
 use crate::resources::Resources;
 use std::path::Path;
+
+use crate::generators::mountain::{make_mountain};
 
 use crate::render_gl::object::{Object};
 use crate::render_gl::camera::{Camera};
@@ -47,22 +50,33 @@ fn run() -> Result<(), failure::Error> {
         gl.Enable(gl::DEPTH_TEST);
     }
 
-    let shader_program = render_gl::Program::from_res(
+    let mountain_program = render_gl::Program::from_res(
         &gl, &res, "shaders/triangle"
     ).unwrap();
 
-    let camera: Camera = Camera::make(
+    let square_program = render_gl::Program::from_res(
+        &gl, &res, "shaders/triangle"
+    ).unwrap();
+
+    let mut camera: Camera = Camera::make(
         &gl,
-        shader_program,
         SCR_WIDTH,
         SCR_HEIGHT,
         45.0,
         0.1,
-        100.0,
+        1000.0,
     );
 
-    let mut square: Object = Object::make(
+    
+    camera.matrix = glm::translate(&camera.matrix, &glm::vec3(0.0, -100.0, -200.0));
+    // camera.matrix = glm::rotate_x(&camera.matrix, glm::radians(&glm::vec1(10.0)).x);
+    
+
+    let mountain: Object = make_mountain(&gl, mountain_program, 100.0, 100.0, 45.0, 200);
+
+    let square: Object = Object::make(
         &gl,
+        square_program,
         vec![
             (-0.3, -0.3, -0.3), ( 0.3, -0.3, -0.3), ( 0.3,  0.3, -0.3),
             ( 0.3,  0.3, -0.3), (-0.3,  0.3, -0.3), (-0.3, -0.3, -0.3),
@@ -90,9 +104,9 @@ fn run() -> Result<(), failure::Error> {
             (1.0, 0.0, 1.0), (1.0, 0.0, 1.0), (1.0, 0.0, 1.0), (1.0, 0.0, 1.0), (1.0, 0.0, 1.0), (1.0, 0.0, 1.0),
             (1.0, 1.0, 1.0), (1.0, 1.0, 1.0), (1.0, 1.0, 1.0), (1.0, 1.0, 1.0), (1.0, 1.0, 1.0), (1.0, 1.0, 1.0),
         ],
-    ).unwrap();
+    );
 
-    square.matrix = glm::rotate_x(&square.matrix, glm::radians(&glm::vec1(-55.0)).x);
+    // square.matrix = glm::rotate_x(&square.matrix, glm::radians(&glm::vec1(-55.0)).x);
 
     unsafe {
         gl.Viewport(0, 0, SCR_WIDTH as i32, SCR_HEIGHT as i32); // set viewport
@@ -112,10 +126,12 @@ fn run() -> Result<(), failure::Error> {
             gl.Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
         }
 
-        square.matrix = glm::rotate_y(&square.matrix, glm::radians(&glm::vec1(2.0)).x);
+        // square.matrix = glm::rotate_y(&square.matrix, glm::radians(&glm::vec1(2.0)).x);
 
-        camera.activate();
+        // camera.matrix = glm::translate(&camera.matrix, &glm::vec3(0.0, 0.0, -0.01));
+
         camera.draw(&square);
+        camera.draw(&mountain);
 
         window.gl_swap_window();
     }

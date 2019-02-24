@@ -1,19 +1,18 @@
 use gl;
-use std::ffi::{CString};
 
 #[allow(non_camel_case_types)]
 #[derive(Copy, Clone, Debug)]
 #[repr(C, packed)]
 pub struct f32_f32_f32 {
-    pub d0: f32,
-    pub d1: f32,
-    pub d2: f32,
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
 }
 
 impl f32_f32_f32 {
-    pub fn new(d0: f32, d1: f32, d2: f32) -> f32_f32_f32 {
+    pub fn new(x: f32, y: f32, z: f32) -> f32_f32_f32 {
         f32_f32_f32 {
-            d0, d1, d2
+            x, y, z
         }
     }
 }

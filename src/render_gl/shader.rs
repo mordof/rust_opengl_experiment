@@ -83,12 +83,12 @@ impl Program {
     }
 
     pub fn set_mat4(&self, gl: &gl::Gl, name: &str, mat4: &glm::Mat4) {
-        let mut loc: gl::types::GLint = 0;
+        let mut _loc: gl::types::GLint = 0;
         let c_str = CString::new(name).unwrap();
 
         unsafe {
-            loc = gl.GetUniformLocation(self.id(), c_str.as_ptr());
-            gl.UniformMatrix4fv(loc, 1, gl::FALSE, mat4.as_ptr());
+            _loc = gl.GetUniformLocation(self.id(), c_str.as_ptr());
+            gl.UniformMatrix4fv(_loc, 1, gl::FALSE, mat4.as_ptr());
         }
     }
 
@@ -148,10 +148,12 @@ impl Shader {
         Ok(Shader { gl: gl.clone(), id })
     }
 
+    #[allow(dead_code)]
     pub fn vertex_shader(gl: &gl::Gl, source: &CStr) -> Result<Shader, String> {
         Shader::make(gl, source, gl::VERTEX_SHADER)
     }
 
+    #[allow(dead_code)]
     pub fn fragment_shader(gl: &gl::Gl, source: &CStr) -> Result<Shader, String> {
         Shader::make(gl, source, gl::FRAGMENT_SHADER)
     }
