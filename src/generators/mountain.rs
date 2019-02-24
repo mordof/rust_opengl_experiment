@@ -59,12 +59,7 @@ fn get_y(x: f32, z: f32, width: f32, depth: f32, height: f32) -> f32 {
     let xy = xy * height; // width y value
     let zy = zy * height; // depth y value
 
-    if xy == 0.0 || zy == 0.0 {
-        return 0.0;
-    }
-    
-    // average the two
-    (xy + zy) / 2.0
+    xy.min(zy)
 }
 
 fn get_color(y: f32, height: f32) -> (f32, f32, f32) {
