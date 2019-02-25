@@ -20,18 +20,18 @@ impl Camera {
     ) -> Camera {
         let up_direction = glm::vec3(0.0, 1.0, 0.0);
     
-        let camera_position = glm::vec3(0.0, 0.0, 0.3);
+        let camera_position = glm::vec3(0.0, 0.0, -3.0);
         let camera_target = glm::vec3(0.0, 0.0, 0.0);
 
         let camera_facing = glm::normalize(&(camera_position - camera_target));
-
-        // let camera_right = glm::normalize(&glm::cross(&up_direction, &camera_facing));
+        let camera_right = glm::normalize(&glm::cross::<f32, glm::U3>(&up_direction, &camera_facing));
+        let camera_up = glm::cross::<f32, glm::U3>(&camera_facing, &camera_right);
 
         
 
         Camera{
             gl: gl.clone(),
-            matrix: glm::translate(&glm::identity(), &glm::vec3(0.0, 0.0, -3.0)),
+            matrix: glm::translate(&glm::identity(), &camera_position),
             lense: glm::perspective(width as f32 / height as f32, glm::radians(&glm::vec1(angle)).x, near, far),
         }
     }

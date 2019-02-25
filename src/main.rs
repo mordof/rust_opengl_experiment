@@ -71,8 +71,7 @@ fn run() -> Result<(), failure::Error> {
     camera.matrix = glm::translate(&camera.matrix, &glm::vec3(0.0, -50.0, -200.0));
     // camera.matrix = glm::rotate_x(&camera.matrix, glm::radians(&glm::vec1(10.0)).x);
     
-
-    let mountain: Object = make_mountain(&gl, mountain_program, 100.0, 100.0, 45.0, 200);
+    let mountain: Object = make_mountain(&gl, mountain_program, 100.0, 100.0, 45.0, 20);
 
     let square: Object = Object::make(
         &gl,

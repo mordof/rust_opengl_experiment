@@ -21,22 +21,35 @@ pub fn make_mountain(
 
     for start_x in (0..point_count).map(|i| (i as f32 * width_space) - (width / 2.0)) {
         for start_z in (0..point_count).map(|i| (i as f32 * depth_space) - (depth / 2.0)) {
-            for vert in 0..6 {
-                let x = start_x + match vert {
-                    1 | 2 | 4 => width_space,
-                    _ => 0.0,
-                };
-                let z = start_z + match vert {
-                    2 | 4 | 5 => depth_space,
-                    _ => 0.0,
-                };
-                let y = get_y(x, z, width, depth, height);
+            for triangle in 0..2 {
+                let mut tri_points: Vec<(f32, f32, f32)> = Vec::new();
 
-                points.push((x, y, z));
-                colors.push(get_color(y, height));
+                for vert in (triangle * 3)..((triangle * 3) + 3) {
+                    let x = start_x + match triangle + vert {
+                        1 | 2 | 4 => width_space,
+                        _ => 0.0,
+                    };
+                    let z = start_z + match triangle + vert {
+                        2 | 4 | 5 => depth_space,
+                        _ => 0.0,
+                    };
+                    let y = get_y(x, z, width, depth, height);
+
+                    tri_points.push((x, y, z));
+                    points.push((x, y, z));
+                }
+
+                let avg_y: f32 = (tri_points[0].1 + tri_points[1].1 + tri_points[2].1) / 3.0;
+                let avg_y_color: (f32, f32, f32) = get_color(avg_y, height);
+
+                colors.push(avg_y_color);
+                colors.push(avg_y_color);
+                colors.push(avg_y_color);
             }
         }
     }
+
+    println!("point, color len: ({:?}, {:?})", points.len(), colors.len());
 
     Object::make(
         gl,
@@ -63,13 +76,5 @@ fn get_y(x: f32, z: f32, width: f32, depth: f32, height: f32) -> f32 {
 }
 
 fn get_color(y: f32, height: f32) -> (f32, f32, f32) {
-    if y / height < 0.4 {
-        return (52.0, 175.0, 45.0);
-    }
-
-    if y / height < 0.7 {
-        return (41.0, 52.0, 61.0);
-    }
-
-    (227.0, 239.0, 249.0)
+    ((y / height) * 255.0, (y / height) * 255.0, (y / height) * 255.0)
 }
