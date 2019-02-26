@@ -49,8 +49,6 @@ pub fn make_mountain(
         }
     }
 
-    println!("point, color len: ({:?}, {:?})", points.len(), colors.len());
-
     Object::make(
         gl,
         program,

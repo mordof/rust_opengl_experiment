@@ -12,6 +12,9 @@ mod generators;
 use crate::resources::Resources;
 use std::path::Path;
 
+use sdl2::event::Event;
+use sdl2::keyboard::Keycode;
+
 use crate::generators::mountain::{make_mountain};
 
 use crate::render_gl::object::{Object};
@@ -30,6 +33,7 @@ fn run() -> Result<(), failure::Error> {
     let res = Resources::from_relative_exe_path(Path::new("assets")).unwrap();
     let sdl = sdl2::init().unwrap();
     let video_subsystem = sdl.video().unwrap();
+    let mut timer = sdl.timer().unwrap();
 
     let gl_attr = video_subsystem.gl_attr();
     gl_attr.set_context_profile(sdl2::video::GLProfile::Core);
@@ -67,9 +71,9 @@ fn run() -> Result<(), failure::Error> {
         1000.0,
     );
 
-    
-    camera.matrix = glm::translate(&camera.matrix, &glm::vec3(0.0, -50.0, -200.0));
-    // camera.matrix = glm::rotate_x(&camera.matrix, glm::radians(&glm::vec1(10.0)).x);
+    let mut camera_y = 80.0;
+
+    camera.reposition_and_look_at(&glm::vec3(0.0, camera_y, 0.0), &glm::vec3(0.0, 10.0, 0.0));
     
     let mountain: Object = make_mountain(&gl, mountain_program, 100.0, 100.0, 45.0, 20);
 
@@ -105,28 +109,66 @@ fn run() -> Result<(), failure::Error> {
         ],
     );
 
-    // square.matrix = glm::rotate_x(&square.matrix, glm::radians(&glm::vec1(-55.0)).x);
-
     unsafe {
         gl.Viewport(0, 0, SCR_WIDTH as i32, SCR_HEIGHT as i32); // set viewport
         gl.ClearColor(0.3, 0.3, 0.5, 1.0);
     }
 
+    let mut count = 0.0;
+
+    let mut left_pressed = false;
+    let mut right_pressed = false;
+    let mut up_pressed = false;
+    let mut down_pressed = false;
+
     let mut event_pump = sdl.event_pump().unwrap();
     'main: loop {
         for event in event_pump.poll_iter() {
             match event {
-                sdl2::event::Event::Quit {..} => break 'main,
+                Event::Quit {..} => break 'main,
+                Event::KeyDown { keycode: Some(Keycode::Left), .. } => {
+                    left_pressed = true;
+                },
+                Event::KeyUp { keycode: Some(Keycode::Left), .. } => {
+                    left_pressed = false;
+                }
+                Event::KeyDown { keycode: Some(Keycode::Right), .. } => {
+                    right_pressed = true;
+                },
+                Event::KeyUp { keycode: Some(Keycode::Right), .. } => {
+                    right_pressed = false;
+                },
+                Event::KeyDown { keycode: Some(Keycode::Up), .. } => {
+                    up_pressed = true;
+                },
+                Event::KeyUp { keycode: Some(Keycode::Up), .. } => {
+                    up_pressed = false;
+                },
+                Event::KeyDown { keycode: Some(Keycode::Down), .. } => {
+                    down_pressed = true;
+                },
+                Event::KeyUp { keycode: Some(Keycode::Down), .. } => {
+                    down_pressed = false;
+                },
                 _ => {},
             }
+        }
+
+        if left_pressed || right_pressed || up_pressed || down_pressed {
+            if left_pressed { count = count - 0.03; }
+            if right_pressed { count = count + 0.03; }
+            if up_pressed { camera_y = camera_y + 0.3; }
+            if down_pressed { camera_y = camera_y - 0.3; }
+            camera.reposition(&glm::vec3(glm::sin(&glm::vec1(count)).x * 100.0, camera_y, glm::cos(&glm::vec1(count)).x * 100.0));
         }
 
         unsafe {
             gl.Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
         }
 
-        // square.matrix = glm::rotate_y(&square.matrix, glm::radians(&glm::vec1(2.0)).x);
+        // count = count + 0.005;
 
+        // square.matrix = glm::rotate_y(&square.matrix, glm::radians(&glm::vec1(2.0)).x);
         // camera.matrix = glm::translate(&camera.matrix, &glm::vec3(0.0, 0.0, -0.01));
 
         camera.draw(&square);
